@@ -1,0 +1,36 @@
+- name: Deploy Flask App
+  hosts: web
+  become: true
+  tasks:
+    - name: Install Python3 and Git
+      yum:
+        name: 
+          - python3
+          - git
+        state: present
+
+    - name: Install pip
+      command: curl -O https://bootstrap.pypa.io/get-pip.py creates=/root/get-pip.py
+
+    - name: Run get-pip.py
+      command: python3 get-pip.py creates=/usr/local/bin/pip3
+
+    - name: Install Flask using pip
+      pip:
+        name: Flask
+
+    - name: Kill existing app.py process
+      shell: pkill -f app.py || true
+
+    - name: Clone Flask app repo
+      git:
+        repo: https://github.com/satya66655/calculator-app.git
+        dest: /home/ec2-user/calculator-app
+        force: yes
+      become_user: ec2-user
+
+    - name: Run Flask app
+      shell: nohup python3 app.py > app.log 2>&1 &
+      args:
+        chdir: /home/ec2-user/calculator-app
+
