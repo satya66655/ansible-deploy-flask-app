@@ -19,8 +19,10 @@
       pip:
         name: Flask
 
-    - name: Kill existing app.py process
-      shell: pkill -f app.py || true
+    - name: Kill existing app.py process (if running)
+      shell: |
+        pgrep -f app.py && pkill -f app.py || echo "No app.py running"
+      ignore_errors: yes
 
     - name: Clone Flask app repo
       git:
