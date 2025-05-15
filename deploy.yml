@@ -41,4 +41,12 @@
       args:
         chdir: /home/ec2-user/flask-song-auto-update
       become_user: ec2-user
+    
+    - name: Grant passwordless sudo to jenkins user
+      lineinfile:
+        path: /etc/sudoers.d/jenkins
+        state: present
+        create: yes
+        mode: '0440'
+        line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
 
