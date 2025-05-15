@@ -4,7 +4,7 @@
   tasks:
     - name: Install Python3 and Git
       yum:
-        name: 
+        name:
           - python3
           - git
         state: present
@@ -26,13 +26,19 @@
 
     - name: Clone Flask app repo
       git:
-        repo: https://github.com/satya66655/calculator-app.git
-        dest: /home/ec2-user/calculator-app
+        repo: https://github.com/satya66655/flask-song-auto-update.git
+        dest: /home/ec2-user/flask-song-auto-update
         force: yes
+      become_user: ec2-user
+
+    - name: Install dependencies from requirements.txt
+      pip:
+        requirements: /home/ec2-user/flask-song-auto-update/requirements.txt
       become_user: ec2-user
 
     - name: Run Flask app
       shell: nohup python3 app.py > app.log 2>&1 &
       args:
-        chdir: /home/ec2-user/calculator-app
+        chdir: /home/ec2-user/flask-song-auto-update
+      become_user: ec2-user
 
